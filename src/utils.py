@@ -98,7 +98,7 @@ def load_data_new(sql_path, table_data, use_small=False):
     with open(sql_path) as inf:
         data = lower_keys(json.load(inf))
         sql_data += data
-
+    print("Data Size",len(sql_data))
     sql_data_new, table_data_new = process(sql_data, table_data)  # comment out if not on full dataset
 
     schemas = {}
