@@ -160,7 +160,7 @@ def init_arg_parser():
     arg_parser.add_argument('--train_opt', default="reinforce", type=str, choices=['reinforce', 'st_gumbel'])
     arg_parser.add_argument('--dataset', default="/home/v-zezhan/Seq2Tree/data", type=str)
 
-    arg_parser.add_argument('--epoch', default=50, type=int, help='Maximum Epoch')
+    arg_parser.add_argument('--epoch', default=3, type=int, help='Maximum Epoch')
     arg_parser.add_argument('--save', default='', type=str,
                             help="Path to save the checkpoint and logs of epoch")
     arg_parser.add_argument('--decoder_heads', type=int, default=4, help='num heads in Transformer Decoder')
