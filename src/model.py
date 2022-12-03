@@ -18,7 +18,8 @@ import copy
 from utils import build_sketch_adjacency_matrix, get_parent_actions
 from pytorch_pretrained_bert.tokenization import BertTokenizer
 from pytorch_pretrained_bert.modeling import BertModel
-from bert_utils import get_wemb_bert, encode_hpu
+from transformers import XLMRobertaTokenizer,XLMRobertaModel,XLMRobertaConfig
+from roberta_utils import get_wemb_bert, encode_hpu
 
 
 device = torch.device("cuda")
@@ -78,8 +79,10 @@ class Seq2Tree(nn.Module):
 
             self.sketch_decoder_lstm = nn.LSTMCell(input_dim, args.hidden_size)
 
-        self.tokenizer = BertTokenizer.from_pretrained(args.bert_model, do_lower_case=True)
-        self.bertModel = BertModel.from_pretrained(args.bert_model)
+        self.tokenizer = XLMRobertaTokenizer.from_pretrained('xlm-roberta-base', do_lower_case=True)
+        self.XLM_config = XLMRobertaConfig()
+        self.bertModel = XLMRobertaModel(self.XLM_config).from_pretrained('xlm-roberta-base')
+        self.XLM_config = self.bertModel.config
         self.bertModel.to(device)
 
         # initialize the decoder's state and cells with encoder hidden states
@@ -985,7 +988,7 @@ class Seq2Tree(nn.Module):
 
     def encoding_src_col(self, batch, src_sents_word, table_sents_word, enc_n):
         wemb_n, wemb_h, l_n, n_hs, l_hpu, l_hs, \
-        nlu_tt, t_to_tt_idx, tt_to_t_idx = get_wemb_bert(bert_config, self.bertModel, self.tokenizer,src_sents_word, table_sents_word, 100,
+        nlu_tt, t_to_tt_idx, tt_to_t_idx = get_wemb_bert(self.XLM_config, self.bertModel, self.tokenizer,src_sents_word, table_sents_word, 100,
                                                          num_out_layers_n=1, num_out_layers_h=1)
         emb = encode_hpu(enc_n, wemb_h, l_hpu=l_hpu, l_hs=l_hs)
         return wemb_n, emb, batch.len_appear_mask(n_hs)
