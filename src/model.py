@@ -118,7 +118,7 @@ class Seq2Tree(nn.Module):
         self.N_embed = nn.Embedding(len(define_rule.N._init_grammar()), args.action_embed_size)
 
         # args.readout
-        self.read_out_act = F.tanh if args.readout == 'non_linear' else nn_utils.identity
+        self.read_out_act = torch.tanh if args.readout == 'non_linear' else nn_utils.identity
         # # args.embed_size args.att_vec_size
         self.query_vec_to_action_embed = nn.Linear(args.att_vec_size, args.action_embed_size,
                                                    bias=args.readout == 'non_linear')
@@ -169,12 +169,12 @@ class Seq2Tree(nn.Module):
         nn.init.xavier_normal_(self.production_embed.weight.data)
         nn.init.xavier_normal_(self.type_embed.weight.data)
         nn.init.xavier_normal_(self.N_embed.weight.data)
-        print('Encode Sketch: ', True if self.is_encode_sketch else False)
-        print('Parent Feeding: ', True if self.is_parent_feeding else False)
-        print('Use Sketch History: ', True if self.use_sketch_history else False)
-        print('Use Column Pointer: ', True if self.use_column_pointer else False)
-        print('Use Sentence Features: ', True if self.use_sentence_features else False)
-        print('Use Stanford Tokenized: ', True if self.use_stanford_tokenized else False)
+#         print('Encode Sketch: ', True if self.is_encode_sketch else False)
+#         print('Parent Feeding: ', True if self.is_parent_feeding else False)
+#         print('Use Sketch History: ', True if self.use_sketch_history else False)
+#         print('Use Column Pointer: ', True if self.use_column_pointer else False)
+#         print('Use Sentence Features: ', True if self.use_sentence_features else False)
+#         print('Use Stanford Tokenized: ', True if self.use_stanford_tokenized else False)
 
     def step(self, x, h_tm1, src_encodings, src_encodings_att_linear, decoder, attention_func, src_token_mask=None,
              return_att_weight=False):
@@ -187,7 +187,7 @@ class Seq2Tree(nn.Module):
 
         # for the formulate ~s_t = tanh(W_c[C_t : S_t])
         # att_t = F.tanh(self.att_vec_linear(torch.cat([h_t, ctx_t], 1)))  # E.q. (5)
-        att_t = F.tanh(attention_func(torch.cat([h_t, ctx_t], 1)))  # E.q. (5)
+        att_t = torch.tanh(attention_func(torch.cat([h_t, ctx_t], 1)))  # E.q. (5)
         att_t = self.dropout(att_t)
 
         if return_att_weight:
@@ -429,7 +429,7 @@ class Seq2Tree(nn.Module):
                 table_appear_mask_val = table_appear_mask_val.cuda()
 
             if self.use_column_pointer:
-                gate = F.sigmoid(self.prob_att(att_t))
+                gate = torch.sigmoid(self.prob_att(att_t))
                 weights = self.column_pointer_net(src_encodings=table_encoding, query_vec=att_t.unsqueeze(0),
                                                   src_token_mask=None) * table_appear_mask_val * gate + self.column_pointer_net(
                     src_encodings=table_encoding, query_vec=att_t.unsqueeze(0),
@@ -808,7 +808,7 @@ class Seq2Tree(nn.Module):
                 table_appear_mask_val = table_appear_mask_val.cuda()
 
             if self.use_column_pointer:
-                gate = F.sigmoid(self.prob_att(att_t))
+                gate = torch.sigmoid(self.prob_att(att_t))
                 weights = self.column_pointer_net(src_encodings=exp_table_embedding, query_vec=att_t.unsqueeze(0),
                                                   src_token_mask=None) * table_appear_mask_val * gate + self.column_pointer_net(
                     src_encodings=exp_table_embedding, query_vec=att_t.unsqueeze(0),
