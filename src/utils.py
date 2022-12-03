@@ -19,10 +19,11 @@ import random as normal_random
 AGG_OPS = ['none', 'max', 'min', 'count', 'sum', 'avg']
 
 wordnet_lemmatizer = WordNetLemmatizer()
-from bert_utils import generate_inputs
+from roberta_utils import generate_inputs
 import copy
 from pytorch_pretrained_bert.tokenization import BertTokenizer
-tokenizer = BertTokenizer.from_pretrained('bert-large-uncased', do_lower_case=True)
+from transformers import XLMRobertaTokenizer
+tokenizer = XLMRobertaTokenizer.from_pretrained('xlm-roberta-base', do_lower_case=True)
 
 
 class GloveHelper(object):
