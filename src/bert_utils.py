@@ -14,7 +14,7 @@ def generate_inputs(tokenizer, nlu1_tok, hds1):
     tokens = []
     segment_ids = []
 
-    tokens.append("[CLS]")
+    tokens.append("<s>")
     segment_ids.append(0)
 
     n_hds = []
@@ -33,7 +33,7 @@ def generate_inputs(tokenizer, nlu1_tok, hds1):
         # else:
         #     raise EnvironmentError
 
-    tokens.append("[SEP]")
+    tokens.append("</s>")
     segment_ids.append(0)
 
     # segment_ids.append(0)
@@ -41,7 +41,7 @@ def generate_inputs(tokenizer, nlu1_tok, hds1):
     #     tokens.append(token)
     #     segment_ids.append(0)
     # i_ed_nlu = len(tokens)
-    # tokens.append("[SEP]")
+    # tokens.append("</s>")
     # segment_ids.append(0)
 
     i_hds = []
@@ -54,10 +54,10 @@ def generate_inputs(tokenizer, nlu1_tok, hds1):
         i_hds.append((i_st_hd, i_ed_hd))
         segment_ids += [1] * len(sub_tok)
         if i < len(hds1)-1:
-            tokens.append("[SEP]")
+            tokens.append("</s>")
             segment_ids.append(0)
         elif i == len(hds1)-1:
-            tokens.append("[SEP]")
+            tokens.append("</s>")
             segment_ids.append(1)
         else:
             raise EnvironmentError
@@ -196,13 +196,13 @@ def get_bert_output(model_bert, tokenizer, nlu_t, hds, max_seq_length):
     all_segment_ids = torch.tensor(segment_ids, dtype=torch.long).to(device)
 
     # 4. Generate BERT output.
-    all_encoder_layer, pooled_output = model_bert(all_input_ids, all_segment_ids, all_input_mask)
+    check,_,all_encoder_layer = model_bert(input_ids=all_input_ids, attention_mask=all_input_mask,output_hidden_states=True)
 
     # 5. generate l_hpu from i_hds
     l_hpu = gen_l_hpu(i_hds)
     l_n = gen_l_hpu(i_nlu)
 
-    return all_encoder_layer, pooled_output, tokens, i_nlu, i_hds, \
+    return all_encoder_layer, check, tokens, i_nlu, i_hds, \
            l_n, n_hs, l_hpu, l_hs, \
            nlu_tt, t_to_tt_idx, tt_to_t_idx
 
