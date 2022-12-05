@@ -14,8 +14,18 @@ import json
 import argparse
 import re as regex
 from nltk.stem import WordNetLemmatizer
-from pattern.en import lemma
+from nltk import pos_tag
 wordnet_lemmatizer = WordNetLemmatizer()
+
+def lemma(w):
+    wordnet_lemmatizer = WordNetLemmatizer()
+
+    pos_list = pos_tag([w])
+    word, tag = pos_list[0]
+
+    tag = tag[0].lower() if tag[0].lower() in ['a', 'r', 'n', 'v'] else None
+    result = word if not tag else wordnet_lemmatizer.lemmatize(word, tag)
+    return result
 
 
 def load_dataSets(args):
