@@ -10,9 +10,6 @@ Install Python dependency via `pip install -r requirements.txt` when the environ
 #### Data preparation
 
 
-* Download [Glove Embedding](https://nlp.stanford.edu/data/wordvecs/glove.42B.300d.zip) and put `glove.42B.300d` under `./data/` directory
-* Download [Pretrained IRNet](https://drive.google.com/open?id=1VoV28fneYss8HaZmoThGlvYU3A-aK31q) and put `
-IRNet_pretrained.model` under `./saved_model/` directory
 * Download preprocessed train/dev datasets from [here](https://drive.google.com/open?id=1YFV1GoLivOMlmunKW0nkzefKULO4wtrn) and put `train.json`, `dev.json` and 
 `tables.json` under `./data/` directory
 
@@ -22,19 +19,17 @@ You could process the origin [Spider Data](https://drive.google.com/uc?export=do
 
 #### Training
 
-Run `train.sh` to train IRNet.
+Run `train.sh` to train the model.
 
 `sh train.sh [GPU_ID] [SAVE_FOLD]`
 
 #### Testing
 
-Run `eval.sh` to eval IRNet.
+Run `eval.sh` to eval the model.
 
 `sh eval.sh [GPU_ID] [OUTPUT_FOLD]`
 
 ## Citation
-
-If you use IRNet, please cite the following work.
 
 ```
 @inproceedings{GuoIRNet2019,
@@ -47,5 +42,3 @@ If you use IRNet, please cite the following work.
 ```
 
 ## Thanks
-We would like to thank [Tao Yu](https://taoyds.github.io/) and [Bo Pang](https://www.linkedin.com/in/bo-pang/) for running evaluations on our submitted models.
-We are also grateful to the flexible semantic parser [TranX](https://github.com/pcyin/tranX) that inspires our works.
